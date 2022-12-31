@@ -1,0 +1,32 @@
+<script type="text/javascript">
+    RED.nodes.registerType('validator',{
+        category: 'GHG_Wallet',
+        color: '#f9e1b7',
+        defaults: {
+            wallet: {value:"", type:"wallet-config",required:true},
+            name: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "font-awesome/fa-check-circle",
+        label: function() {
+            this.wname = "validator:"+RED.nodes.node(this.wallet).name;
+            return (this.name||this.wname)||(this.wallet||"validator");
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="validator">
+    <div class="form-row">
+        <label for="node-input-wallet"><i class="fa fa-tag"></i> Wallet</label>
+        <input type="text" id="node-input-wallet" placeholder="Wallet Configuration">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="validator">
+    <p>Digitaly validates given Payload. Returns payload if valid.</p>
+</script>

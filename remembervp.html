@@ -1,0 +1,31 @@
+<script type="text/javascript">
+    RED.nodes.registerType('remembervp',{
+        category: 'GHG_Wallet',
+        color: '#BDC69E',
+        defaults: {
+            wallet: {value:"", type:"wallet-config",required:true},
+            name: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "font-awesome/fa-television",
+        label: function() {
+            return this.name||(this.wallet||"remembervp");
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="remembervp">
+    <div class="form-row">
+        <label for="node-input-wallet"><i class="fa fa-tag"></i> Wallet</label>
+        <input type="text" id="node-input-wallet" placeholder="Wallet Configuration">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="remembervp">
+    <p>Stores a received verifieable presentation in wallet</p>
+</script>

@@ -1,0 +1,48 @@
+<script type="text/javascript">
+    RED.nodes.registerType('metered-notary',{
+        category: 'GHG_Wallet',
+        color: '#a0d0a0',
+        defaults: {
+            wallet: {value:"", type:"wallet-config",required:true},
+            name: {value:""},
+            zip: {value:""},
+            context: {value:"",required:false}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "font-awesome/fa-legal",
+        label: function() {
+            this.wname = "Notary:"+RED.nodes.node(this.wallet).name;
+            return (this.name||this.wname)||(this.wallet||"metered-notary");
+        },
+        oneditprepare: function() {
+            $("#node-input-context").typedInput({
+                type:"json",
+                types:["json"]
+            });
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="metered-notary">
+    <div class="form-row">
+        <label for="node-input-wallet"><i class="fa fa-tag"></i> Wallet</label>
+        <input type="text" id="node-input-wallet" placeholder="Wallet Configuration">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-zip"><i class="fa fa-tag"></i> Postal Code (Germany only)</label>
+        <input type="text" id="node-input-zip" placeholder="(optional if regional emissions are scoped)">
+    </div>
+    <div class="form-row">
+        <label for="node-input-context"><i class="fa fa-tag"></i> Context</label>
+        <input type="text" id="node-input-context" placeholder="Context of meta information">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="metered-notary">
+    <p>Returns a new certificate for given meter reading given in msg.payload. Covers delta of previous reading as consumption.</p>
+</script>

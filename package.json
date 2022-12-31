@@ -1,0 +1,55 @@
+{
+  "name": "ghgnotary",
+  "version": "0.5.0",
+  "description": "Node-RED Nodes to work with a Greenhouse Gas notary service for certification of emission events (like charging sessions) or metered readings.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/energychain/ghgnotary.git"
+  },
+  "keywords": [
+    "greenhousegas",
+    "tydids",
+    "ghg",
+    "certification",
+    "emissions",
+    "stromdao",
+    "idideal"
+  ],
+  "author": "STROMDAO GmbH <dev@stromdao.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/energychain/ghgnotary/issues"
+  },
+  "node-red": {
+    "version": ">=2.0.0",
+    "nodes": {
+      "Event-Notary": "event-notary.js",
+      "Meter-Notary": "metered-notary.js",
+      "Certificates": "certificates.js",
+      "Present": "present.js",
+      "Presentations": "presentations.js",
+      "Remember-Presentation": "remembervp.js",
+      "Signer":"signer.js",
+      "Validator":"validator.js",
+      "Statistics":"statistics.js",
+      "Wallet": "wallet-config.js"
+    }
+  },
+  "homepage": "https://github.com/energychain/ghgnotary#readme",
+  "dependencies": {
+    "ghgwallet": "^0.5.5"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0",
+    "node-red": "^3.0.2",
+    "node-red-node-test-helper": "^0.3.0",
+    "should": "^13.2.3"
+  }
+}

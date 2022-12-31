@@ -1,0 +1,422 @@
+[
+    {
+        "id": "9c468891843d2caa",
+        "type": "tab",
+        "label": "Discovergy Meter - GHG Metering",
+        "disabled": false,
+        "info": "## About\r\nThis Flow shows how to get greenhouse gas emissions metered using a discovergy meter. (Germany only!)\r\n\r\n## Funktion\r\nMit Hilfe eines Discovergy Metering Nodes wird jede Stunde der Zählerstand abgefragt und ein Zertifikat ausgestellt und gespeichert. Eine einfache Statistik über die Zertifikate ist über die Node-RED-UI abrufbar.\r\n\r\n![Screenshot](https://static.corrently.cloud/ghgwallet/sample_ghgnotary_screen.png)\r\n",
+        "env": []
+    },
+    {
+        "id": "8bd9ed21a6206f7e",
+        "type": "inject",
+        "z": "9c468891843d2caa",
+        "name": "Hourly Trigger",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "3600",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 140,
+        "wires": [
+            [
+                "d57b79c565190c35"
+            ]
+        ]
+    },
+    {
+        "id": "d57b79c565190c35",
+        "type": "Discovergy Meter",
+        "z": "9c468891843d2caa",
+        "name": "",
+        "account": "1789825417adf6bc",
+        "meterId": "515e27a084414d42a675cffbdaf19857",
+        "firstReading": 0,
+        "firstReadingOut": 0,
+        "firstReadingDate": "",
+        "isProduction": false,
+        "revenue": 0,
+        "amortization": 0,
+        "prodMeterId": null,
+        "firstReadingProd": 0,
+        "x": 350,
+        "y": 140,
+        "wires": [
+            [
+                "80188834de17ce6b"
+            ]
+        ]
+    },
+    {
+        "id": "ef74faf87779e4b2",
+        "type": "comment",
+        "z": "9c468891843d2caa",
+        "name": "Auslesen der Zählerdaten",
+        "info": "",
+        "x": 170,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "80188834de17ce6b",
+        "type": "function",
+        "z": "9c468891843d2caa",
+        "name": "Zählerstand extrahieren",
+        "func": "msg.payload = msg.payload.latest.energy_wh;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 140,
+        "wires": [
+            [
+                "430271d2c37f3f73"
+            ]
+        ]
+    },
+    {
+        "id": "430271d2c37f3f73",
+        "type": "metered-notary",
+        "z": "9c468891843d2caa",
+        "wallet": "e8a4f4f7fec78a05",
+        "name": "",
+        "zip": "69256",
+        "context": "",
+        "x": 820,
+        "y": 140,
+        "wires": [
+            [
+                "c466241b63c6da70",
+                "e775af8a2d987a4a"
+            ]
+        ]
+    },
+    {
+        "id": "c466241b63c6da70",
+        "type": "debug",
+        "z": "9c468891843d2caa",
+        "name": "Zertifikat",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "970bf14b5a3f8cc9",
+        "type": "comment",
+        "z": "9c468891843d2caa",
+        "name": "Hilfe",
+        "info": "- Discovergy Account hinterlegen\n- Einmal den Flow mit \"Übernehmen\" deployen\n- Anschließend Zähler auswählen",
+        "x": 310,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "bba7b1cabb0cf6a6",
+        "type": "comment",
+        "z": "9c468891843d2caa",
+        "name": "Hilfe",
+        "info": "Der aktuelle Zählerstand ist in `msg.payload.latest.energy_wh` - dieser wird extrahiert und als `msg.payload` weitergegeben.",
+        "x": 510,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "8ab5e486192377c4",
+        "type": "comment",
+        "z": "9c468891843d2caa",
+        "name": "Hilfe",
+        "info": "Der Notary Service sorgt dafür, dass aus dem Zählerstandsgang (=Differenz zwischen zwei Ablesungen) neue Zertifikate ausgestellt werden. Im Anschluss werden diese in die lokale Wallet gespeichert.",
+        "x": 750,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "6a2d03858210139e",
+        "type": "comment",
+        "z": "9c468891843d2caa",
+        "name": "UI / Dashboard",
+        "info": "",
+        "x": 140,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "f419a5c140bb1895",
+        "type": "inject",
+        "z": "9c468891843d2caa",
+        "name": "Aktualisierung",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "3600",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 320,
+        "wires": [
+            [
+                "b620fa4af443fd90",
+                "5e663a1784517028"
+            ]
+        ]
+    },
+    {
+        "id": "b620fa4af443fd90",
+        "type": "statistics",
+        "z": "9c468891843d2caa",
+        "wallet": "e8a4f4f7fec78a05",
+        "name": "",
+        "x": 390,
+        "y": 320,
+        "wires": [
+            [
+                "852cd64e27ab1b04",
+                "c652e712194c6d9a",
+                "b71ee6a60858a46d",
+                "665ee367fc81190a",
+                "19c53a5c5efb8a08"
+            ]
+        ]
+    },
+    {
+        "id": "852cd64e27ab1b04",
+        "type": "debug",
+        "z": "9c468891843d2caa",
+        "name": "debug 14",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "c652e712194c6d9a",
+        "type": "ui_text",
+        "z": "9c468891843d2caa",
+        "group": "f725427a6a0e0201",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "Zertifikate",
+        "label": "Zertifikate",
+        "format": "{{msg.payload.certificates.count}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 640,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "b71ee6a60858a46d",
+        "type": "ui_text",
+        "z": "9c468891843d2caa",
+        "group": "f725427a6a0e0201",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "Strombezug",
+        "label": "Strombezug",
+        "format": "{{msg.payload.certificates.sums.wh/1000}} kWh",
+        "layout": "row-spread",
+        "className": "",
+        "x": 650,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "665ee367fc81190a",
+        "type": "ui_text",
+        "z": "9c468891843d2caa",
+        "group": "f725427a6a0e0201",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "name": "Emissionen",
+        "label": "Emissionen",
+        "format": "{{msg.payload.certificates.sums.emissions/1000}} kg",
+        "layout": "row-spread",
+        "className": "",
+        "x": 650,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "19c53a5c5efb8a08",
+        "type": "ui_text",
+        "z": "9c468891843d2caa",
+        "group": "f725427a6a0e0201",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "name": "Einsparung",
+        "label": "Einsparung",
+        "format": "{{msg.payload.certificates.sums.savings/1000}} kg",
+        "layout": "row-spread",
+        "className": "",
+        "x": 650,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "e775af8a2d987a4a",
+        "type": "link out",
+        "z": "9c468891843d2caa",
+        "name": "Event: Neue Zertifikat",
+        "mode": "link",
+        "links": [
+            "6167e2c5547da1a4"
+        ],
+        "x": 985,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "6167e2c5547da1a4",
+        "type": "link in",
+        "z": "9c468891843d2caa",
+        "name": "link in 3",
+        "links": [
+            "e775af8a2d987a4a"
+        ],
+        "x": 205,
+        "y": 360,
+        "wires": [
+            [
+                "b620fa4af443fd90",
+                "5e663a1784517028"
+            ]
+        ]
+    },
+    {
+        "id": "5e663a1784517028",
+        "type": "certificates",
+        "z": "9c468891843d2caa",
+        "wallet": "e8a4f4f7fec78a05",
+        "name": "Zertifikate",
+        "x": 340,
+        "y": 480,
+        "wires": [
+            [
+                "757f43b97b126775"
+            ]
+        ]
+    },
+    {
+        "id": "4a95b1ec3a3cf54d",
+        "type": "ui_template",
+        "z": "9c468891843d2caa",
+        "group": "81d563675e1b33c8",
+        "name": "Zertifikate",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "format": "<table class=\"table\">\n    <tr ng-repeat=\"payload in msg.payload\">\n        <td>{{payload.time}}</td>\n        <td>{{payload.wh/1000}} kWh </td>\n        <td>{{payload.emissions/1000}} kg </td>\n    </tr>\n</table>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 640,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "757f43b97b126775",
+        "type": "function",
+        "z": "9c468891843d2caa",
+        "name": "Cleaning for Display",
+        "func": "let result = [];\nfor(let i=0;(i<msg.payload.length)&&(i<24);i++) {\n    msg.payload[i].time = new Date(msg.payload[i].time).toLocaleString('de-DE');\n    result.push(msg.payload[i]);\n}\nmsg.payload = result;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 520,
+        "wires": [
+            [
+                "4a95b1ec3a3cf54d"
+            ]
+        ]
+    },
+    {
+        "id": "1789825417adf6bc",
+        "type": "discovergy-config",
+        "name": "me@thorsten-zoerner.com"
+    },
+    {
+        "id": "e8a4f4f7fec78a05",
+        "type": "wallet-config",
+        "name": "Discovergy Meter 1"
+    },
+    {
+        "id": "f725427a6a0e0201",
+        "type": "ui_group",
+        "name": "Treibhausgas (Strombezug)",
+        "tab": "0adcfeae2144ffd1",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "81d563675e1b33c8",
+        "type": "ui_group",
+        "name": "Zertifikate",
+        "tab": "0adcfeae2144ffd1",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "0adcfeae2144ffd1",
+        "type": "ui_tab",
+        "name": "Treibhausgas Protokollierung",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    }
+]

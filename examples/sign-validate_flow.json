@@ -1,0 +1,140 @@
+[
+    {
+        "id": "783f2ca339d6b0b3",
+        "type": "tab",
+        "label": "Signer and Validator Sample",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "6cd46ed379605e1d",
+        "type": "inject",
+        "z": "783f2ca339d6b0b3",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 160,
+        "wires": [
+            [
+                "c3c768e9cf6a05da"
+            ]
+        ]
+    },
+    {
+        "id": "c3c768e9cf6a05da",
+        "type": "signer",
+        "z": "783f2ca339d6b0b3",
+        "wallet": "9173e4f8583cdd9c",
+        "name": "",
+        "x": 330,
+        "y": 160,
+        "wires": [
+            [
+                "7473cea4ef8e5c6d",
+                "e8872ceedf5ccf1e",
+                "6c09b34c74a20e4a"
+            ]
+        ]
+    },
+    {
+        "id": "7473cea4ef8e5c6d",
+        "type": "validator",
+        "z": "783f2ca339d6b0b3",
+        "wallet": "9173e4f8583cdd9c",
+        "name": "",
+        "x": 740,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "824208344264da71",
+        "type": "validator",
+        "z": "783f2ca339d6b0b3",
+        "wallet": "9173e4f8583cdd9c",
+        "name": "",
+        "x": 740,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "740a8eceab706e90",
+        "type": "comment",
+        "z": "783f2ca339d6b0b3",
+        "name": "Should be Valid",
+        "info": "",
+        "x": 740,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "4d806da0c5518231",
+        "type": "comment",
+        "z": "783f2ca339d6b0b3",
+        "name": "Should be invalid",
+        "info": "",
+        "x": 740,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "e8872ceedf5ccf1e",
+        "type": "function",
+        "z": "783f2ca339d6b0b3",
+        "name": "Manipulate Data",
+        "func": "msg.payload.payload++;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 220,
+        "wires": [
+            [
+                "824208344264da71"
+            ]
+        ]
+    },
+    {
+        "id": "6c09b34c74a20e4a",
+        "type": "debug",
+        "z": "783f2ca339d6b0b3",
+        "name": "Signed Payload",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 540,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "9173e4f8583cdd9c",
+        "type": "wallet-config",
+        "name": "signer"
+    }
+]

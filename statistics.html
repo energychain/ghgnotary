@@ -1,0 +1,32 @@
+<script type="text/javascript">
+    RED.nodes.registerType('statistics',{
+        category: 'GHG_Wallet',
+        color: '#FFEECA',
+        defaults: {
+            wallet: {value:"", type:"wallet-config",required:true},
+            name: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "font-awesome/fa-television",
+        label: function() {
+            this.wname = "Stats:"+RED.nodes.node(this.wallet).name;
+            return (this.name||this.wname)||(this.wallet||"statistics");
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="statistics">
+    <div class="form-row">
+        <label for="node-input-wallet"><i class="fa fa-tag"></i> Wallet</label>
+        <input type="text" id="node-input-wallet" placeholder="Wallet Configuration">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="statistics">
+    <p>Provides statistical information of stored certificates and presentations.</p>
+</script>

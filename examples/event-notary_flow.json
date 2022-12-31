@@ -1,0 +1,24 @@
+[
+    {
+        "id": "64a1576d28a8cc89",
+        "type": "event-notary",
+        "z": "5fc8656e430b0d7c",
+        "wallet": "979cbb227bd42231",
+        "name": "Event-Notary-Testing",
+        "zip": "69256",
+        "x": 440,
+        "y": 60,
+        "wires": [
+            ["testhelper"]
+        ]
+    },
+    {
+        "id": "979cbb227bd42231",
+        "type": "wallet-config",
+        "name": "Test Event-Notary"
+    },
+    {
+        "id": "testhelper", 
+        "type": "helper" 
+    }   
+]

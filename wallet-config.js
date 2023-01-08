@@ -111,38 +111,60 @@ module.exports = function(RED) {
             await saveWallet();
 
             const fs = require("fs");
-            const latestId = (1 * await node.wallet.tydids.contracts.GHGCERTIFICATES._tokenIdCounter());
+            
             let owners = [];
             nfts = [];
+
             // Lightning Cachde: We load from Disk what we already know.
             const walletDir = node.baseDir+"/ghgwallets/"+n.id+"/";
-            if(fs.existsSync(walletDir+"nfts.json")) {
-              
-                nfts = JSON.parse(fs.readFileSync(walletDir+"nfts.json"));            
-                for(let i=0;i<nfts.length;i++) {
-                    if(nfts[i].tokenId>node.introTokenId) {
-                        node.introTokenId = nfts[i].tokenId;
+            let nftBlock = node.introBlock;
+            
+            if(fs.existsSync(walletDir+"nfts.json")) { 
+                const tnfts = JSON.parse(fs.readFileSync(walletDir+"nfts.json"));            
+                for(let j=0;j<tnfts.length;j++) {
+                    if(tnfts[j].blockNumber > nftBlock) nftBlock = tnfts[j].blockNumber;
+                    let missing = true;
+                    for(let i=0;(i<nfts.length)&&(missing);i++) {
+                            if(nfts[i].tokenId == tnfts[j].tokenId) missing=false;
+                    }             
+                    if(missing) {
+                        owners.push(tnfts[j].hash);
+                        nfts.push(tnfts[j]);
                     }
-                    owners.push(nfts[i].hash);
+
                 }
             }
-            if(typeof payload.startTokenId !== 'undefined') {
-                nfts = [];
-                owners = [];
-                node.introTokenId = payload.startTokenId;
-            }
-            for(let i=(1 * node.introTokenId) + 1;i<(1 * latestId);i++) {
-                const owner = await node.wallet.tydids.contracts.GHGCERTIFICATES.ownerOf(i);
-                if(owner.toLowerCase() == node.wallet.address.toLowerCase()) {
-                    const did =  await node.wallet.tydids.contracts.GHGCERTIFICATES.tokenURI(i);
+
+            const filter = await node.wallet.tydids.contracts.GHGCERTIFICATES.filters.Transfer(null,node.wallet.address,null);     
+            let bln = await node.wallet.provider.getBlockNumber();
+            
+            while(bln>nftBlock) {
+                const certs = await node.wallet.tydids.contracts.GHGCERTIFICATES.queryFilter(filter,nftBlock,nftBlock+500);
+                for(let i=0;i<certs.length;i++) {
+                    const did =  await node.wallet.tydids.contracts.GHGCERTIFICATES.tokenURI(certs[i].args.tokenId);
                     const hash = did.substring("did:ethr:6226:0x3bFCf4Fe3b7D2E2fd079b5Dd546Aa30300D8fBE1:".length);
-                    owners.push(hash);
-                    nfts.push({
-                        tokenId:i,
-                        hash:hash
-                    });
+                    let missing = true;
+                    for(let i=0;(i<nfts.length)&&(missing);i++) {
+                        if(typeof  certs[i] !== 'undefined') {
+                            if(nfts[i].tokenId == (1 * certs[i].args.tokenId)) missing=false;
+                        } else {
+                            console.log("Caution with ",i,certs[i]);
+                        }
+                    }
+                    if(missing) {
+                        owners.push(hash);
+                        nfts.push({
+                            tokenId:(1 * certs[i].args.tokenId),
+                            hash:hash,
+                            blockNumber:certs[i].blockNumber
+                        });
+                    }
+
                 }
+                nftBlock+=500;
             }
+            // Limitation: We need to filter Blocks transfered out!
+
             fs.writeFileSync(walletDir+"nfts.json",JSON.stringify(nfts));
             return owners;
         }
@@ -188,7 +210,7 @@ module.exports = function(RED) {
                     await saveWallet();
                     walletJSON.address = node.wallet.address;
                     fs.writeFileSync(walletDir+"wallet.json",JSON.stringify(walletJSON));
-                    node.introBlock = bln;
+                    node.introBlock = walletJSON.introBlock;
                     node.introTokenId = walletJSON.introTokenId;
                 }
                 initBlock();

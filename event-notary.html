@@ -1,6 +1,6 @@
 <script type="text/javascript">
     RED.nodes.registerType('event-notary',{
-        category: 'GHG_Wallet',
+        category: 'GHG_Notary',
         color: '#a0d0a0',
         defaults: {
             wallet: {value:"", type:"wallet-config",required:true},
@@ -12,7 +12,7 @@
         icon: "font-awesome/fa-legal",
         label: function() {
             this.wname = "Notary:"+RED.nodes.node(this.wallet).name;
-            return (this.name||this.wname)||(this.wallet||"event-notary");
+            return (this.name||this.wname)||(this.wallet||"Event based");
         }
     });
 </script>

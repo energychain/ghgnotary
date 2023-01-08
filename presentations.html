@@ -1,7 +1,7 @@
 <script type="text/javascript">
     RED.nodes.registerType('presentations',{
-        category: 'GHG_Wallet',
-        color: '#FFEECA',
+        category: 'GHG_Presentation',
+        color: '#9EB37F',
         defaults: {
             wallet: {value:"", type:"wallet-config",required:true},
             name: {value:""}
@@ -11,7 +11,7 @@
         icon: "font-awesome/fa-television",
         label: function() {
             this.wname = RED.nodes.node(this.wallet).name;
-            return (this.name||this.wname)||(this.wallet||"presentations");
+            return (this.name||this.wname)||(this.wallet||"Presentations");
         }
     });
 </script>

@@ -1,21 +1,22 @@
 <script type="text/javascript">
-    RED.nodes.registerType('remembervp',{
-        category: 'GHG_Presentation',
-        color: '#9EB37F',
+    RED.nodes.registerType('Emissions',{
+        category: 'GHG_Consensus',
+        color: '#CDCA97',
         defaults: {
             wallet: {value:"", type:"wallet-config",required:true},
             name: {value:""}
         },
         inputs:1,
         outputs:1,
-        icon: "font-awesome/fa-television",
+        icon: "font-awesome/fa-database",
         label: function() {
-            return this.name||(this.wallet||"Remember Presentation");
+            this.wname = "emissionsNFT:"+RED.nodes.node(this.wallet).name;
+            return (this.name||this.wname)||(this.wallet||"emissionsNFT");
         }
     });
 </script>
 
-<script type="text/html" data-template-name="remembervp">
+<script type="text/html" data-template-name="Emissions">
     <div class="form-row">
         <label for="node-input-wallet"><i class="fa fa-tag"></i> Wallet</label>
         <input type="text" id="node-input-wallet" placeholder="Wallet Configuration">
@@ -26,6 +27,6 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="remembervp">
-    <p>Stores a received verifieable presentation in wallet</p>
+<script type="text/x-red" data-help-name="Emissions">
+    <p>emissionsNFT.</p>
 </script>

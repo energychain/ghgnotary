@@ -32,6 +32,9 @@ module.exports = function(RED) {
                     }
                 }
             }
+            if(typeof app_wallet !== 'undefined') {
+                msg.payload.address = app_wallet.address;
+            }
             node.send(msg);
         });
     }

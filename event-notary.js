@@ -40,7 +40,7 @@ module.exports = function(RED) {
                             node.send(msg);
                         }
                 } catch(e) {
-                    console.log(e);
+                   // console.log(e);
                     node.status({fill:'red',shape:"dot",text:"Retry:"+i+"/10"});
                     await new Promise(r => setTimeout(r, 1000+(Math.round(Math.random()*10000))));
                     i++;

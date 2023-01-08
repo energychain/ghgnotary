@@ -1,21 +1,22 @@
 <script type="text/javascript">
-    RED.nodes.registerType('remembervp',{
-        category: 'GHG_Presentation',
-        color: '#9EB37F',
+    RED.nodes.registerType('certificate',{
+        category: 'GHG_Wallet',
+        color: '#f9e1b7',
         defaults: {
             wallet: {value:"", type:"wallet-config",required:true},
             name: {value:""}
         },
         inputs:1,
         outputs:1,
-        icon: "font-awesome/fa-television",
+        icon: "font-awesome/fa-file-archive-o",
         label: function() {
-            return this.name||(this.wallet||"Remember Presentation");
+            this.wname = "certificate:"+RED.nodes.node(this.wallet).name;
+            return (this.name||this.wname)||(this.wallet||"certificate");
         }
     });
 </script>
 
-<script type="text/html" data-template-name="remembervp">
+<script type="text/html" data-template-name="certificate">
     <div class="form-row">
         <label for="node-input-wallet"><i class="fa fa-tag"></i> Wallet</label>
         <input type="text" id="node-input-wallet" placeholder="Wallet Configuration">
@@ -26,6 +27,6 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="remembervp">
-    <p>Stores a received verifieable presentation in wallet</p>
+<script type="text/x-red" data-help-name="certificate">
+    <p>Digitaly validates given Payload. Returns payload if valid.</p>
 </script>

@@ -6,10 +6,11 @@ module.exports = function(RED) {
         this.ghgwallet = RED.nodes.getNode(config.wallet);
         var node = this;
         node.on('input', async function(msg) {
+
             const app_wallet = await node.ghgwallet.getGhgWallet();
-        
+
             const certs = await node.ghgwallet.getCertificatesList();
-            
+
             let total_wh =  0;
             let total_emissions =0;
             let total_savings =0;
@@ -19,9 +20,7 @@ module.exports = function(RED) {
                 if(typeof certs[i].savings !== 'undefined') total_savings += certs[i].savings;
                 if(typeof certs[i].wh !== 'undefined') total_wh += certs[i].wh;
             }
-
-            const presentations = await node.ghgwallet.getPresentationsList();
-
+            
             msg.payload = {
                 certificates: {
                     count:certs.length,
@@ -34,6 +33,7 @@ module.exports = function(RED) {
             }
             if(typeof app_wallet !== 'undefined') {
                 msg.payload.address = app_wallet.address;
+                msg.payload.txBalance = (await app_wallet.getBalance()).toString();
             }
             node.send(msg);
         });

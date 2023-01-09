@@ -1,22 +1,22 @@
 <script type="text/javascript">
-    RED.nodes.registerType('Import CERT',{
-        category: 'GHG_xChange',
+    RED.nodes.registerType('Filter NFT',{
+        category: 'GHG_Consensus',
         color: '#CDCA97',
         defaults: {
             wallet: {value:"", type:"wallet-config",required:true},
             name: {value:""}
         },
         inputs:1,
-        outputs:1,
-        icon: "font-awesome/fa-envelope-open-o",
+        outputs:2,
+        icon: "font-awesome/fa-filter",
         label: function() {
-            this.wname = "importCertificate:"+RED.nodes.node(this.wallet).name;
-            return (this.name||this.wname)||(this.wallet||"Import Certificate");
+            this.wname = "filterNFT:"+RED.nodes.node(this.wallet).name;
+            return (this.name||this.wname)||(this.wallet||"filterNFT");
         }
     });
 </script>
 
-<script type="text/html" data-template-name="Import CERT">
+<script type="text/html" data-template-name="Filter NFT">
     <div class="form-row">
         <label for="node-input-wallet"><i class="fa fa-tag"></i> Wallet</label>
         <input type="text" id="node-input-wallet" placeholder="Wallet Configuration">
@@ -27,7 +27,6 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="Import CERT">
-    <p>Import certificate (JSON content) into wallet.</p>
-    <p><a href="https://corrently.io/books/susscope2-framework-fur-co2-emissionen-strombezug/page/node-import-cert" target="_blank">Dokumentation (German only)</a></p>
+<script type="text/x-red" data-help-name="Filter NFT">
+    <p>Filter NFTs with (output[0]) or without (output[1]) certificate in wallet.</p>
 </script>

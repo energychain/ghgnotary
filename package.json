@@ -1,6 +1,6 @@
 {
   "name": "ghgnotary",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "Node-RED Nodes to work with a Greenhouse Gas notary service for certification of emission events (like charging sessions) or metered readings.",
   "main": "index.js",
   "scripts": {
@@ -44,8 +44,10 @@
       "Transfer-Certificate-Ownership": "transfer.js",
       "Import-Certificate": "importCertificate.js",
       "Owned Certificates": "ownedNFT.js",
+      "Received Certificate": "receivedNFT.js",
       "Emissions NFT":"emissionsNFT.js",
       "Savings NFT":"savingsNFT.js",
+      "Filter NFT":"filterNFT.js",
       "Wallet": "wallet-config.js"
     }
   },

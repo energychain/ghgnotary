@@ -6,6 +6,9 @@
 ## Release Note
 This Open Source Release is _designed and limited for the German Electricity market_ . It is an early release for testing, development and collaboration.
 
+## Documentation (German only)
+[SusScope2-GHG Notary](https://corrently.io/books/susscope2-framework-fur-co2-emissionen-strombezug/chapter/ghg-notary)
+
 ## Maintainer / Imprint
 <addr>
 <a href="https://stromdao.de/">STROMDAO GmbH</a><br/>

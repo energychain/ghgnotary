@@ -107,8 +107,12 @@ module.exports = function(RED) {
             app_wallet.app.getPresentation(certificate,type,recipient);
 
         }
-        this.ownedNFTs = async function(payload) {
+        this.receivedNFTSlistener = async function(payload,rNode) {
             await saveWallet();
+            let owner = node.wallet.address;
+            if(typeof payload.owner !== 'undefined') {
+                owner = payload.owner;
+            }
 
             const fs = require("fs");
             
@@ -119,8 +123,73 @@ module.exports = function(RED) {
             const walletDir = node.baseDir+"/ghgwallets/"+n.id+"/";
             let nftBlock = node.introBlock;
             
-            if(fs.existsSync(walletDir+"nfts.json")) { 
-                const tnfts = JSON.parse(fs.readFileSync(walletDir+"nfts.json"));            
+            if(fs.existsSync(walletDir+owner+"_nfts.json")) { 
+                const tnfts = JSON.parse(fs.readFileSync(walletDir+owner+"_nfts.json"));            
+                for(let j=0;j<tnfts.length;j++) {
+                    if(tnfts[j].blockNumber > nftBlock) nftBlock = tnfts[j].blockNumber;
+                    let missing = true;
+                    for(let i=0;(i<nfts.length)&&(missing);i++) {
+                            if(nfts[i].tokenId == tnfts[j].tokenId) missing=false;
+                    }             
+                    if(missing) {
+                        owners.push(tnfts[j].hash);
+                        nfts.push(tnfts[j]);
+                    }
+
+                }
+            }
+       
+            //const filter = await node.wallet.tydids.contracts.GHGCERTIFICATES.filters.Transfer(null,owner,null); 
+            const filter = await node.wallet.tydids.contracts.GHGCERTIFICATES.filters.Transfer(null,null,null);    
+            node.wallet.tydids.contracts.GHGCERTIFICATES.on(filter,async function(x,a,b,c,d,e,f) {             
+                const certs = c;
+                if((typeof certs !== 'undefined') && (typeof certs.args !== 'undefined') && (certs.args.to.toLowerCase() == owner.toLowerCase())) {
+                    
+                    const did =  await node.wallet.tydids.contracts.GHGCERTIFICATES.tokenURI(certs.args.tokenId);
+                    const hash = did.substring("did:ethr:6226:0x3bFCf4Fe3b7D2E2fd079b5Dd546Aa30300D8fBE1:".length);
+                    let missing = true;
+                    for(let j=0;(j<nfts.length)&&(missing);j++) {
+                        if(typeof  certs !== 'undefined') {
+                            if(nfts[j].tokenId == (1 * certs.args.tokenId)) missing=false;
+                        } else {
+                            console.log("Caution with ",certs);
+                        }
+                    }
+                    if(missing) {
+                        owners.push(hash);
+                        nfts.push({
+                            tokenId:(1 * certs.args.tokenId),
+                            hash:hash,
+                            blockNumber:certs.blockNumber
+                        });
+                    }
+
+                    msg = {
+                        payload:hash,
+                        topic:owner
+                    };
+                    rNode.send(msg);
+                }
+            });
+        }
+        this.ownedNFTs = async function(payload) {
+            await saveWallet();
+            let owner = node.wallet.address;
+            if(typeof payload.owner !== 'undefined') {
+                owner = payload.owner;
+            }
+
+            const fs = require("fs");
+            
+            let owners = [];
+            nfts = [];
+
+            // Lightning Cachde: We load from Disk what we already know.
+            const walletDir = node.baseDir+"/ghgwallets/"+n.id+"/";
+            let nftBlock = node.introBlock;
+            
+            if(fs.existsSync(walletDir+owner+"_nfts.json")) { 
+                const tnfts = JSON.parse(fs.readFileSync(walletDir+owner+"_nfts.json"));            
                 for(let j=0;j<tnfts.length;j++) {
                     if(tnfts[j].blockNumber > nftBlock) nftBlock = tnfts[j].blockNumber;
                     let missing = true;
@@ -135,37 +204,39 @@ module.exports = function(RED) {
                 }
             }
 
-            const filter = await node.wallet.tydids.contracts.GHGCERTIFICATES.filters.Transfer(null,node.wallet.address,null);     
+            const filter = await node.wallet.tydids.contracts.GHGCERTIFICATES.filters.Transfer(null,owner,null);     
+          
             let bln = await node.wallet.provider.getBlockNumber();
-            
+           
             while(bln>nftBlock) {
                 const certs = await node.wallet.tydids.contracts.GHGCERTIFICATES.queryFilter(filter,nftBlock,nftBlock+500);
                 for(let i=0;i<certs.length;i++) {
-                    const did =  await node.wallet.tydids.contracts.GHGCERTIFICATES.tokenURI(certs[i].args.tokenId);
-                    const hash = did.substring("did:ethr:6226:0x3bFCf4Fe3b7D2E2fd079b5Dd546Aa30300D8fBE1:".length);
-                    let missing = true;
-                    for(let i=0;(i<nfts.length)&&(missing);i++) {
-                        if(typeof  certs[i] !== 'undefined') {
-                            if(nfts[i].tokenId == (1 * certs[i].args.tokenId)) missing=false;
-                        } else {
-                            console.log("Caution with ",i,certs[i]);
+                    if((typeof certs[i] !== 'undefined') && (typeof certs[i].args !== 'undefined') && (certs[i].args.to.toLowerCase() == owner.toLowerCase())) {
+                        const did =  await node.wallet.tydids.contracts.GHGCERTIFICATES.tokenURI(certs[i].args.tokenId);
+                        const hash = did.substring("did:ethr:6226:0x3bFCf4Fe3b7D2E2fd079b5Dd546Aa30300D8fBE1:".length);
+                        let missing = true;
+                        for(let j=0;(j<nfts.length)&&(missing);j++) {
+                            if(typeof  certs[i] !== 'undefined') {
+                                if(nfts[j].tokenId == (1 * certs[i].args.tokenId)) missing=false;
+                            } else {
+                                console.log("Caution with ",i,certs[i]);
+                            }
+                        }
+                        if(missing) {
+                            owners.push(hash);
+                            nfts.push({
+                                tokenId:(1 * certs[i].args.tokenId),
+                                hash:hash,
+                                blockNumber:certs[i].blockNumber
+                            });
                         }
                     }
-                    if(missing) {
-                        owners.push(hash);
-                        nfts.push({
-                            tokenId:(1 * certs[i].args.tokenId),
-                            hash:hash,
-                            blockNumber:certs[i].blockNumber
-                        });
-                    }
-
                 }
                 nftBlock+=500;
             }
             // Limitation: We need to filter Blocks transfered out!
 
-            fs.writeFileSync(walletDir+"nfts.json",JSON.stringify(nfts));
+            fs.writeFileSync(walletDir+owner+"_nfts.json",JSON.stringify(nfts));
             return owners;
         }
 

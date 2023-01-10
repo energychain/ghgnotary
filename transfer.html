@@ -5,6 +5,7 @@
         defaults: {
             wallet: {value:"", type:"wallet-config",required:true},
             recipient: {value:"", required:true},
+            aggregation:{value:"", required:false},
             name: {value:""}
         },
         inputs:1,
@@ -25,6 +26,10 @@
     <div class="form-row">
         <label for="node-input-recipient"><i class="fa fa-tag"></i> Recipient</label>
         <input type="text" id="node-input-recipient" placeholder="0x....">
+    </div>
+    <div class="form-row">
+        <label for="node-input-aggregation"><i class="fa fa-tag"></i>Is GHG Aggregation</label>
+        <input type="checkbox" id="node-input-aggregation"> check to auto-add
     </div>
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>

@@ -18,7 +18,6 @@ module.exports = function(RED) {
                 payload.owner = app_wallet.address;
             }
             if(config.reply) {
-                console.log("RELAYING");
                 const payloads = await node.ghgwallet.ownedNFTs(payload);
                 for(let i=0;i<payloads.length;i++) {
                     node.send({payload:payloads[i]});

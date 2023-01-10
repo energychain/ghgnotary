@@ -10,7 +10,15 @@ module.exports = function(RED) {
             node.status({fill:'yellow',shape:"dot",text:""});
             try {
                 const app_wallet = await node.ghgwallet.getGhgWallet();
-                const r = await app_wallet.app.transferCertificateOwnership(config.recipient,msg.payload);
+                if((typeof config.aggregation !== 'undefined') && (aggregation)) {
+                    const r = await app_wallet.app.transferCertificateToAggregation(config.recipient,msg.payload);
+                    msg.payload = r;
+                    node.send(msg);
+                } else {
+                    const r = await app_wallet.app.transferCertificateOwnership(config.recipient,msg.payload);
+                    msg.payload = r;
+                    node.send(msg);
+                }
                 node.status({fill:'green',shape:"dot",text:""});
             } catch(e) {
                 console.log(e);

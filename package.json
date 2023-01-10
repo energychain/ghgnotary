@@ -1,6 +1,6 @@
 {
   "name": "ghgnotary",
-  "version": "0.5.9",
+  "version": "0.5.10",
   "description": "Node-RED Nodes to work with a Greenhouse Gas notary service for certification of emission events (like charging sessions) or metered readings.",
   "main": "index.js",
   "scripts": {
@@ -53,7 +53,7 @@
   },
   "homepage": "https://github.com/energychain/ghgnotary#readme",
   "dependencies": {
-    "ghgwallet": "^0.5.11"
+    "ghgwallet": "^0.5.12"
   },
   "devDependencies": {
     "mocha": "^10.2.0",

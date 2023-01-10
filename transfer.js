@@ -13,6 +13,12 @@ module.exports = function(RED) {
                 if((typeof config.aggregation !== 'undefined') && (config.aggregation)) {
                     const r = await app_wallet.app.transferCertificateToAggregation(config.recipient,msg.payload);
                     msg.payload = r;
+                    if(r == null) {
+                        msg.payload = {
+                            err:"Transfer to aggregation failed permanently.",
+                            ref:"https://l.stromdao.de/ghgaggregation"
+                        }
+                    }
                     node.send(msg);
                 } else {
                     const r = await app_wallet.app.transferCertificateOwnership(config.recipient,msg.payload);

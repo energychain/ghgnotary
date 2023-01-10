@@ -10,7 +10,7 @@ module.exports = function(RED) {
             node.status({fill:'yellow',shape:"dot",text:""});
             try {
                 const app_wallet = await node.ghgwallet.getGhgWallet();
-                if((typeof config.aggregation !== 'undefined') && (aggregation)) {
+                if((typeof config.aggregation !== 'undefined') && (config.aggregation)) {
                     const r = await app_wallet.app.transferCertificateToAggregation(config.recipient,msg.payload);
                     msg.payload = r;
                     node.send(msg);

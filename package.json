@@ -1,6 +1,6 @@
 {
   "name": "ghgnotary",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "Node-RED Nodes to work with a Greenhouse Gas notary service for certification of emission events (like charging sessions) or metered readings.",
   "main": "index.js",
   "scripts": {

@@ -38,7 +38,8 @@ module.exports = function(RED) {
                 time:new Date().getTime(),
                 wh:certificate.presentations.consumption.payload.actual,
                 emissions:certificate.presentations.ghg.payload.actual.grid,
-                savings:certificate.presentations.ghg.payload.saving.grid
+                savings:certificate.presentations.ghg.payload.saving.grid,
+                surplus:certificate.presentations.ghg.payload.surplus.grid
             })
             fs.writeFileSync(certificatestDir+""+certificate.did.payload.uid.toLowerCase()+".json",JSON.stringify(certificate));
             fs.writeFileSync(certificatestDir+"index.json",JSON.stringify(indexJSON));
@@ -245,7 +246,10 @@ module.exports = function(RED) {
         }
         this.getNFTSaving = async function(hash) {
             return 1 * (await node.wallet.tydids.contracts.GHGSAVINGS.balanceOf(hash));
-        }     
+        }   
+        this.getNFTSurplus = async function(hash) {
+            return 1 * (await node.wallet.tydids.contracts.GHGSURPLUS.balanceOf(hash));
+        }      
         // Method is called sync during init and provides after Init all operations as singleton
         this.getGhgWallet = async function() {
             // This is a dirty hack to avoid timing issues during startup

@@ -14,10 +14,12 @@ module.exports = function(RED) {
             let total_wh =  0;
             let total_emissions =0;
             let total_savings =0;
+            let total_surplus =0;
 
             for(let i=0;i<certs.length;i++) {
                 if(typeof certs[i].emissions !== 'undefined') total_emissions += certs[i].emissions;
                 if(typeof certs[i].savings !== 'undefined') total_savings += certs[i].savings;
+                if(typeof certs[i].surplus !== 'undefined') total_surplus += certs[i].surplus;
                 if(typeof certs[i].wh !== 'undefined') total_wh += certs[i].wh;
             }
             
@@ -27,7 +29,8 @@ module.exports = function(RED) {
                     sums: {
                         wh:total_wh,
                         emissions:total_emissions,
-                        savings:total_savings
+                        savings:total_savings,
+                        surplus:total_surplus
                     }
                 }
             }

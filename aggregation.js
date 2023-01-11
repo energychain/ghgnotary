@@ -15,7 +15,9 @@ module.exports = function(RED) {
                     savings:await sc_aggregation.savings() * 1,
                     nfts:await sc_aggregation.cntNFTs() *1,
                     compensation:await sc_aggregation.compensation() * 1,
-                    owner:await sc_aggregation.owner()
+                    owner:await sc_aggregation.owner(),
+                    created:await sc_aggregation.creationTime() * 1000,
+                    updated:await sc_aggregation.lastTime() * 1000
                 }
                 node.send(msg);
                 node.status({fill:'green',shape:"dot",text:""});

@@ -11,6 +11,7 @@ module.exports = function(RED) {
             try {
                 const app_wallet = await node.ghgwallet.getGhgWallet();
                 if((typeof config.aggregation !== 'undefined') && (config.aggregation)) {
+                    console.log("Trying to move ",config.recipient,msg.payload.did.payload.nft.payload.tokenId);
                     const r = await app_wallet.app.transferCertificateToAggregation(config.recipient,msg.payload);
                     msg.payload = r;
                     if(r == null) {
@@ -18,14 +19,18 @@ module.exports = function(RED) {
                             err:"Transfer to aggregation failed permanently.",
                             ref:"https://l.stromdao.de/ghgaggregation"
                         }
+                        node.status({fill:'red',shape:"dot",text:msg.payload.err});
+                    } else {
+                        node.status({fill:'green',shape:"dot",text:"TX:"+r.nonce});
                     }
                     node.send(msg);
                 } else {
                     const r = await app_wallet.app.transferCertificateOwnership(config.recipient,msg.payload);
                     msg.payload = r;
                     node.send(msg);
+                    node.status({fill:'green',shape:"dot",text:""});
                 }
-                node.status({fill:'green',shape:"dot",text:""});
+                
             } catch(e) {
                 console.log(e);
                 node.status({fill:'red',shape:"dot",text:"Failed to send ("+e+")"});
